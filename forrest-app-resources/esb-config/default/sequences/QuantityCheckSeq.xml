@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence xmlns="http://ws.apache.org/ns/synapse" name="QuantityCheckSeq">
+   <log>
+      <property name="DEBUG" value="&gt;&gt; in QuantityCheck"/>
+   </log>
+   <payloadFactory media-type="xml">
+      <format>
+         <p:getApprovalDetail xmlns:p="http://com.test/getApprovalDetail">
+            <ax210:quantityDetail xmlns:ax210="http://com.test/getApprovalDetail">
+               <xs:quantity xmlns:xs="http://com.test/getApprovalDetail">$1</xs:quantity>
+            </ax210:quantityDetail>
+         </p:getApprovalDetail>
+      </format>
+      <args>
+         <arg xmlns:ns="http://org.apache.synapse/xsd"
+              evaluator="xml"
+              expression="get-property('uri.var.quantity')"/>
+      </args>
+   </payloadFactory>
+   <header name="Action" value="urn:getApproval"/>
+   <log level="full"/>
+   <send receive="EasypaySeq">
+      <endpoint key="QuantityCheckEP"/>
+   </send>
+</sequence>

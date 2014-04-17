@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence xmlns="http://ws.apache.org/ns/synapse" name="Deliver4uSeq">
+   <log level="full">
+      <property name="DEBUG" value="&gt;&gt;Deliver4uSeq"/>
+   </log>
+   <property xmlns:ns="http://org.apache.synapse/xsd"
+             name="REF_CODE"
+             expression="//confirmationCode"
+             scope="default"
+             type="STRING"/>
+   <property name="HTTP_METHOD" value="GET" scope="axis2" type="STRING"/>
+   <property xmlns:ns="http://org.apache.synapse/xsd"
+             name="REST_URL_POSTFIX"
+             expression="fn:concat('/deliver/uid/', fn:concat('6000', fn:concat('/pref/', $ctx:REF_CODE))) "
+             scope="axis2"
+             type="STRING"/>
+   <property xmlns:ns="http://org.apache.synapse/xsd"
+             name="Authorization"
+             expression="fn:concat('Basic ', base64Encode('fpuser:fpuser'))"
+             scope="transport"/>
+   <send>
+      <endpoint key="deliver4UEp"/>
+   </send>
+</sequence>

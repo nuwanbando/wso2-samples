@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence xmlns="http://ws.apache.org/ns/synapse" name="defOut">
+   <log level="full">
+      <property name="DEBUG" value="Ooooooo OUT"/>
+   </log>
+   <script language="js">var foo = new Namespace('http://ws.apache.org/commons/ns/payload');
+                              var res = mc.getPayloadXML().toString(); 
+                                                                 mc.setPayloadJSON( { "response" : res });</script>
+   <property name="messageType" value="application/json" scope="axis2"/>
+   <log level="full">
+      <property name="DEBUG" value="Ooooooo OUT"/>
+   </log>
+   <send/>
+</sequence>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api xmlns="http://ws.apache.org/ns/synapse" name="test" context="/tp">
+   <resource methods="GET"
+             uri-template="/epid/{epid}/bookid/{bookid}/quantity/{quantity}"
+             inSequence="QuantityCheckSeq"
+             outSequence="defOut"/>
+</api>

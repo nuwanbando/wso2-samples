@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence xmlns="http://ws.apache.org/ns/synapse" name="EasypaySeq">
+   <log>
+      <property name="DEBUG" value="&gt;&gt; in EasypaySeq"/>
+   </log>
+   <property xmlns:ns="http://org.apache.synapse/xsd"
+             xmlns:sam="http://com.test/getApprovalDetail"
+             name="APPROVAL"
+             expression="//sam:getApproval/sam:approval"/>
+   <log>
+      <property xmlns:ns="http://org.apache.synapse/xsd"
+                name="DEBUG#############"
+                expression="get-property('APPROVAL')"/>
+   </log>
+   <switch xmlns:ns="http://org.apache.synapse/xsd"
+           xmlns:sam="http://com.test/getApprovalDetail"
+           source="//sam:getApproval/sam:approval">
+      <case regex="true">
+         <payloadFactory media-type="xml">
+            <format>
+               <eas:makePayment xmlns:eas="http://easypay.com/">
+                  <partnerID xmlns="">100</partnerID>
+                  <epid xmlns="">$1</epid>
+                  <bookid xmlns="">$2</bookid>
+                  <quantity xmlns="">$3</quantity>
+               </eas:makePayment>
+            </format>
+            <args>
+               <arg evaluator="xml" expression="get-property('uri.var.epid')"/>
+               <arg evaluator="xml" expression="get-property('uri.var.bookid')"/>
+               <arg evaluator="xml" expression="get-property('uri.var.quantity')"/>
+            </args>
+         </payloadFactory>
+         <log level="full"/>
+         <send receive="Deliver4uSeq">
+            <endpoint key="EasypayEp"/>
+         </send>
+      </case>
+      <case regex="false">
+         <script language="js">var approval = mc.getPayloadXML()..*::approval.toString();                    mc.setPayloadJSON(                        {                            "approval" : approval                        });</script>
+         <property name="messageType" value="application/json" scope="axis2"/>
+         <send/>
+      </case>
+   </switch>
+</sequence>
